@@ -723,7 +723,7 @@ async def auto_filter(client, msg, spoll=False):
     else:
         await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
     if spoll:
-        await msg.message.delete(1200)
+        await msg.message.delete(600)
 
 
 async def advantage_spell_chok(msg):
@@ -736,8 +736,8 @@ async def advantage_spell_chok(msg):
     gs_parsed = []
     if not g_s:
         k = await msg.reply("I couldn't find any movie in that name.")
-        await asyncio.sleep(8)
-        await k.delete(1200)
+        await asyncio.sleep(600)
+        await k.delete(600)
         return
     regex = re.compile(r".*(imdb|wikipedia).*", re.IGNORECASE)  # look for imdb / wiki results
     gs = list(filter(regex.match, g_s))
@@ -765,8 +765,8 @@ async def advantage_spell_chok(msg):
     movielist = list(dict.fromkeys(movielist))  # removing duplicates
     if not movielist:
         k = await msg.reply("I couldn't find anything related to that. Check your spelling")
-        await asyncio.sleep(8)
-        await k.delete(1200)
+        await asyncio.sleep(600)
+        await k.delete(600)
         return
     SPELL_CHECK[msg.message_id] = movielist
     btn = [[
