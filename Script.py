@@ -10,7 +10,7 @@ class script(object):
 ✯ 𝙻𝙰𝙽𝙶𝚄𝙰𝙶𝙴: 𝙿𝚈𝚃𝙷𝙾𝙽 𝟹
 ✯ 𝙳𝙰𝚃𝙰 𝙱𝙰𝚂𝙴: 𝙼𝙾𝙽𝙶𝙾 𝙳𝙱
 ✯ 𝙱𝙾𝚃 𝚂𝙴𝚁𝚅𝙴𝚁: 𝙷𝙴𝚁𝙾𝙺𝚄
-✯ 𝙱𝚄𝙸𝙻𝙳 𝚂𝚃𝙰𝚃𝚄𝚂: @gujjubhai"""
+✯ JOINT CHANNEL: @gujjubhai"""
     SOURCE_TXT = """<b>NOTE:</b>
 - @gujjubhai is a open source project. 
 - Source - https://t.me/gujjubhai  
