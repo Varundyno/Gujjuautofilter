@@ -125,7 +125,7 @@ async def who_is(client, message):
             parse_mode="html",
             disable_notification=True
         )
-    await status_message.delete(600)
+    await status_message.delete(60)
 
 @Client.on_message(filters.command(["imdb", 'search']))
 async def imdb_search(client, message):
@@ -145,8 +145,8 @@ async def imdb_search(client, message):
             for movie in movies
         ]
         await k.edit('Here is what i found on IMDb', reply_markup=InlineKeyboardMarkup(btn))
-        await asyncio.sleep(600)
-        await k.delete(600)
+        await asyncio.sleep(60)
+        await k.delete()
     else:
         await message.reply('Give me a movie / series Name')
 
