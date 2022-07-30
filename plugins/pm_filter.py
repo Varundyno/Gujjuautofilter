@@ -713,8 +713,8 @@ async def auto_filter(client, msg, spoll=False):
         try:
             await message.reply_photo(photo=imdb.get('poster'), caption=cap[:1024],
                                       reply_markup=InlineKeyboardMarkup(btn))
-            await asyncio.sleep(15)
-            await k.delete(15)
+            await asyncio.sleep(600)
+            await k.delete(600)
         except (MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty):
             pic = imdb.get('poster')
             poster = pic.replace('.jpg', "._V1_UX360.jpg")
@@ -739,7 +739,7 @@ async def advantage_spell_chok(msg):
     if not g_s:
         k = await msg.reply("I couldn't find any movie in that name.")
         await asyncio.sleep(600)
-        await k.delete()
+        await k.delete(600)
         return
     regex = re.compile(r".*(imdb|wikipedia).*", re.IGNORECASE)  # look for imdb / wiki results
     gs = list(filter(regex.match, g_s))
@@ -768,7 +768,7 @@ async def advantage_spell_chok(msg):
     if not movielist:
         k = await msg.reply("I couldn't find anything related to that. Check your spelling")
         await asyncio.sleep(600)
-        await k.delete()
+        await k.delete(600)
         return
     SPELL_CHECK[msg.message_id] = movielist
     btn = [[
