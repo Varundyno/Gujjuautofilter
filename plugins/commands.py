@@ -201,7 +201,7 @@ async def start(client, message):
                     logger.exception(e)
                     continue
             await asyncio.sleep(600) 
-        return await sts.delete()
+        return await sts.delete(600)
         
 
     files_ = await get_file_details(file_id)           
