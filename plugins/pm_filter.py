@@ -724,6 +724,8 @@ async def auto_filter(client, msg, spoll=False):
             logger.exception(e)
             await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
     else:
+        
+        
         await message.reply_text(cap, reply_markup=InlineKeyboardMarkup(btn))
     if spoll:
 async def advantage_spell_chok(msg):
