@@ -708,7 +708,7 @@ async def auto_filter(client, msg, spoll=False):
             **locals()
         )
     else:
-        cap = f"<b><i>Movie Name : {search}\nRequested By : {message.from_user.mention}\nGroup : {message.chat.title}</i></b>"
+        cap = f"<b>Hey {message.from_user.mention}</b>👋🏻\n<b>🔍 Here is Your Query Result</b>: <code>{search}</code>\n<b>© Powered by</b>: <b><a href=https://t.me/MoviZenXFlix>{message.chat.title}</a></b>\nㅤㅤㅤㅤ\n<b><i>⚠️ This message will be Auto-deleted after 20 Minute to avoid copyright issues.</b></i>"
     if imdb and imdb.get('poster'):
         try:
             hehe = await message.reply_photo(photo=imdb.get('poster'), caption=cap, reply_markup=InlineKeyboardMarkup(btn))
@@ -739,7 +739,7 @@ async def advantage_spell_chok(msg):
     gs_parsed = []
     if not g_s:
         k = await msg.reply("I couldn't find any movie in that name.")
-        await asyncio.sleep(600)
+        await asyncio.sleep(8)
         await k.delete()
         return
     regex = re.compile(r".*(imdb|wikipedia).*", re.IGNORECASE)  # look for imdb / wiki results
