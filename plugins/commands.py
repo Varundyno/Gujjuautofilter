@@ -3,7 +3,7 @@ import logging
 import random
 import asyncio
 from Script import script
-from pyrogram import Client, filters, enums
+from pyrogram import Client, filters
 from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id
@@ -18,12 +18,12 @@ logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
 
-@Client.on_message(filters.command("start") & filters.incoming)
+@Client.on_message(filters.command("start") & filters.incoming & ~filters.edited)
 async def start(client, message):
-    if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
+    if message.chat.type in ['group', 'supergroup']:
         buttons = [
             [
-                InlineKeyboardButton('🤖 Updates', url='https://t.me/gujjubhai')
+                InlineKeyboardButton('⚡ Updates channel⚡', url='https://t.me/gujjubhai')
             ],
             [
                 InlineKeyboardButton('ℹ️ Help', url=f"https://t.me/{temp.U_NAME}?start=help"),
@@ -42,20 +42,24 @@ async def start(client, message):
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
     if len(message.command) != 2:
         buttons = [[
-            InlineKeyboardButton('➕ Add Me To Your Groups ➕', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
+            InlineKeyboardButton('♻️ Add Me To Your Groups ♻️', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
+        ], [
+            InlineKeyboardButton('🎯 Movie Group 🎯', url='https://t.me/gujjubhai'),
+            InlineKeyboardButton('⚡ Updates Channel⚡', url='https://t.me/gujjubhai')
             ],[
-            InlineKeyboardButton('🔍 Search', switch_inline_query_current_chat=''),
-            InlineKeyboardButton('🤖 Updates', url='https://t.me/gujjubhai')
+            InlineKeyboardButton('💯 Share Our Bot 💯', url='https://t.me/share/url?url=MoviGenX%20Media%20Search%20Bot%20%E2%9A%A1%0A%0A%E2%9C%85%20Faster%20And%20Efficient%20%F0%9F%8F%8D%EF%B8%8F%F0%9F%92%A8%0A%E2%9C%85%20Work%20In%20Group%20For%20Free%20%F0%9F%A4%A9%0A%E2%9C%85%20Highly%20Accurate%20Results%20%F0%9F%98%97%0A%E2%9C%85%20Also%20some%20Other%20feature%20%F0%9F%A4%9F%F0%9F%8F%BD%0A%0AAdd%20Me%20As%20Admin%20In%20Any%20Group%20To%20Search%20For%20Movies%20%F0%9F%8D%BF%0A%0A%E2%94%8F%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%93%0A%20%20%20%20%20%40MoviGenXFilterBoT%E2%9A%A1%0A%E2%94%97%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%9B')
+        ], [
+            InlineKeyboardButton('📎 Help', callback_data='help'),
+            InlineKeyboardButton('😁 About', callback_data='about')
             ],[
-            InlineKeyboardButton('ℹ️ Help', callback_data='help'),
-            InlineKeyboardButton('😊 About', callback_data='about')
+            InlineKeyboardButton('✘ Close the Menu ✘', callback_data='close_data')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME),
             reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
+            parse_mode='html'
         )
         return
     if AUTH_CHANNEL and not await is_subscribed(client, message):
@@ -67,41 +71,45 @@ async def start(client, message):
         btn = [
             [
                 InlineKeyboardButton(
-                    "🤖 Join Updates Channel", url=invite_link.invite_link
+                    "⚡ Join Updates Channel ⚡", url=invite_link.invite_link
                 )
             ]
         ]
 
         if message.command[1] != "subscribe":
             try:
-                kk, file_id = message.command[1].split("_", 1)
-                pre = 'checksubp' if kk == 'filep' else 'checksub' 
-                btn.append([InlineKeyboardButton(" 🔄 Try Again", callback_data=f"{pre}#{file_id}")])
-            except (IndexError, ValueError):
-                btn.append([InlineKeyboardButton(" 🔄 Try Again", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
+            	kk, file_id = message.command[1].split("_", 1)
+            	pre = 'checksubp' if kk == 'filep' else 'checksub' 
+            	btn.append([InlineKeyboardButton(" 🔄 Try Again", callback_data=f"{pre}#{file_id}")])
+            except IndexError:
+                btn.append([InlineKeyboardButton(" 🔄 Try Again", url=f"https://t.me/{temp.U_NAME}/{message.command[1]}")])
         await client.send_message(
             chat_id=message.from_user.id,
             text="**Please Join My Updates Channel to use this Bot!**",
             reply_markup=InlineKeyboardMarkup(btn),
-            parse_mode=enums.ParseMode.MARKDOWN
+            parse_mode="markdown"
             )
         return
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
         buttons = [[
-            InlineKeyboardButton('➕ Add Me To Your Groups ➕', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
+            InlineKeyboardButton('♻️ Add Me To Your Groups ♻️', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
+        ], [
+            InlineKeyboardButton('🎯 Movie Group 🎯', url='https://t.me/gujjubhai'),
+            InlineKeyboardButton('⚡ Updates Channel⚡', url='https://t.me/gujjubhai')
             ],[
-            InlineKeyboardButton('🔍 Search', switch_inline_query_current_chat=''),
-            InlineKeyboardButton('🤖 Updates', url='https://t.me/gujjubhai')
+            InlineKeyboardButton('💯 Share Our Bot 💯', url='https://t.me/share/url?url=gujjubhai%20Media%20Search%20Bot%20%E2%9A%A1%0A%0A%E2%9C%85%20Faster%20And%20Efficient%20%F0%9F%8F%8D%EF%B8%8F%F0%9F%92%A8%0A%E2%9C%85%20Work%20In%20Group%20For%20Free%20%F0%9F%A4%A9%0A%E2%9C%85%20Highly%20Accurate%20Results%20%F0%9F%98%97%0A%E2%9C%85%20Also%20some%20Other%20feature%20%F0%9F%A4%9F%F0%9F%8F%BD%0A%0AAdd%20Me%20As%20Admin%20In%20Any%20Group%20To%20Search%20For%20Movies%20%F0%9F%8D%BF%0A%0A%E2%94%8F%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%93%0A%20%20%20%20%20%40gujjubhaimovies_bot%E2%9A%A1%0A%E2%94%97%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%81%E2%94%9B')
+        ], [
+            InlineKeyboardButton('📎 Help', callback_data='help'),
+            InlineKeyboardButton('😁 About', callback_data='about')
             ],[
-            InlineKeyboardButton('ℹ️ Help', callback_data='help'),
-            InlineKeyboardButton('😊 About', callback_data='about')
+            InlineKeyboardButton('✘ Close the Menu ✘', callback_data='close_data')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(message.from_user.mention, temp.U_NAME, temp.B_NAME),
             reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
+            parse_mode='html'
         )
         return
     data = message.command[1]
@@ -155,7 +163,7 @@ async def start(client, message):
             except Exception as e:
                 logger.warning(e, exc_info=True)
                 continue
-            await asyncio.sleep(600) 
+            await asyncio.sleep(1) 
         await sts.delete()
         return
     elif data.split("-", 1)[0] == "DSTORE":
@@ -200,7 +208,7 @@ async def start(client, message):
                 except Exception as e:
                     logger.exception(e)
                     continue
-            await asyncio.sleep(60) 
+            await asyncio.sleep(1) 
         return await sts.delete()
         
 
@@ -240,10 +248,20 @@ async def start(client, message):
             f_caption=f_caption
     if f_caption is None:
         f_caption = f"{files.file_name}"
+    buttons = [
+        [
+            InlineKeyboardButton('✘ Movie Updates', url='https://t.me/gujjubhai'),
+            InlineKeyboardButton('Natak Channel ✘', url='https://t.me/gujjubhainatak')
+        ],
+        [
+            InlineKeyboardButton('✘ Gujjubhai Group ✘', url=f'https://t.me/mxCLubHouse')
+        ]
+        ]
     await client.send_cached_media(
         chat_id=message.from_user.id,
         file_id=file_id,
         caption=f_caption,
+        reply_markup=InlineKeyboardMarkup(buttons),
         protect_content=True if pre == 'filep' else False,
         )
                     
@@ -371,7 +389,7 @@ async def settings(client, message):
         return await message.reply(f"You are anonymous admin. Use /connect {message.chat.id} in PM")
     chat_type = message.chat.type
 
-    if chat_type == enums.ChatType.PRIVATE:
+    if chat_type == "private":
         grpid = await active_connection(str(userid))
         if grpid is not None:
             grp_id = grpid
@@ -385,7 +403,7 @@ async def settings(client, message):
             await message.reply_text("I'm not connected to any groups!", quote=True)
             return
 
-    elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
+    elif chat_type in ["group", "supergroup"]:
         grp_id = message.chat.id
         title = message.chat.title
 
@@ -394,8 +412,8 @@ async def settings(client, message):
 
     st = await client.get_chat_member(grp_id, userid)
     if (
-            st.status != enums.ChatMemberStatus.ADMINISTRATOR
-            and st.status != enums.ChatMemberStatus.OWNER
+            st.status != "administrator"
+            and st.status != "creator"
             and str(userid) not in ADMINS
     ):
         return
@@ -472,8 +490,8 @@ async def settings(client, message):
             text=f"<b>Change Your Settings for {title} As Your Wish ⚙</b>",
             reply_markup=reply_markup,
             disable_web_page_preview=True,
-            parse_mode=enums.ParseMode.HTML,
-            reply_to_message_id=message.id
+            parse_mode="html",
+            reply_to_message_id=message.message_id
         )
 
 
@@ -486,7 +504,7 @@ async def save_template(client, message):
         return await message.reply(f"You are anonymous admin. Use /connect {message.chat.id} in PM")
     chat_type = message.chat.type
 
-    if chat_type == enums.ChatType.PRIVATE:
+    if chat_type == "private":
         grpid = await active_connection(str(userid))
         if grpid is not None:
             grp_id = grpid
@@ -500,7 +518,7 @@ async def save_template(client, message):
             await message.reply_text("I'm not connected to any groups!", quote=True)
             return
 
-    elif chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
+    elif chat_type in ["group", "supergroup"]:
         grp_id = message.chat.id
         title = message.chat.title
 
@@ -509,8 +527,8 @@ async def save_template(client, message):
 
     st = await client.get_chat_member(grp_id, userid)
     if (
-            st.status != enums.ChatMemberStatus.ADMINISTRATOR
-            and st.status != enums.ChatMemberStatus.OWNER
+            st.status != "administrator"
+            and st.status != "creator"
             and str(userid) not in ADMINS
     ):
         return
